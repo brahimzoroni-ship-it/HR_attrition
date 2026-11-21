@@ -25,6 +25,16 @@ app.add_middleware(
 MODEL_PATH = 'models/best_model.pkl'
 model = joblib.load(MODEL_PATH) if os.path.exists(MODEL_PATH) else None
 
+def engineer_features(df):
+    df = df.copy()
+    proj = df['number_project'].replace(0, 1)
+    df['hours_per_project'] = df['average_montly_hours'] / proj
+    df['sat_eval_diff'] = df['satisfaction_level'] - df['last_evaluation']
+    df['burnout_risk'] = ((df['average_montly_hours'] > 220) & (df['number_project'] >= 5)).astype(int)
+    df['under_challenged'] = ((df['average_montly_hours'] < 140) & (df['number_project'] <= 2)).astype(int)
+    df['tenure_sq'] = df['time_spend_company'] ** 2
+    return df
+
 @app.get("/")
 def read_root():
     return {
@@ -100,11 +110,12 @@ def predict_attrition(employee: EmployeeInput):
         raise HTTPException(status_code=500, model_error="Model not loaded")
         
     input_df = pd.DataFrame([employee.model_dump()])
+    input_df = engineer_features(input_df)
+    
     prob_leave = float(model.predict_proba(input_df)[0][1])
     prob_stay = float(1.0 - prob_leave)
     prediction = int(model.predict(input_df)[0])
     
-    # Generate main contributing factors based on rules / heuristics for explainability
     factors = []
     if employee.satisfaction_level < 0.6:
         factors.append({"factor": "Low Satisfaction Level", "impact": "High Risk", "value": employee.satisfaction_level})

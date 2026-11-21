@@ -1,93 +1,43 @@
 {
-  "best_model": "Gradient Boosting",
+  "best_model": "Optimized Gradient Boosting",
   "results": [
     {
-      "Model": "Logistic Regression",
-      "Precision": 0.6318,
-      "Recall": 0.3941,
-      "F1-Score": 0.4854,
-      "ROC-AUC": 0.7584,
-      "PR-AUC": 0.5841,
+      "Model": "Optimized XGBoost",
+      "Optimal Threshold": 0.4,
+      "Accuracy": 0.716,
+      "Precision": 0.5146,
+      "Recall": 0.7128,
+      "F1-Score": 0.5977,
+      "ROC-AUC": 0.7778,
+      "PR-AUC": 0.6188,
       "Confusion Matrix": [
         [
-          1908,
-          204
+          1515,
+          597
         ],
         [
-          538,
-          350
+          255,
+          633
         ]
       ]
     },
     {
-      "Model": "Decision Tree",
-      "Precision": 0.6299,
-      "Recall": 0.3795,
-      "F1-Score": 0.4736,
-      "ROC-AUC": 0.7429,
-      "PR-AUC": 0.5599,
+      "Model": "Optimized Gradient Boosting",
+      "Optimal Threshold": 0.26,
+      "Accuracy": 0.711,
+      "Precision": 0.5084,
+      "Recall": 0.7185,
+      "F1-Score": 0.5954,
+      "ROC-AUC": 0.7789,
+      "PR-AUC": 0.6213,
       "Confusion Matrix": [
         [
-          1914,
-          198
+          1495,
+          617
         ],
         [
-          551,
-          337
-        ]
-      ]
-    },
-    {
-      "Model": "Random Forest",
-      "Precision": 0.6475,
-      "Recall": 0.4178,
-      "F1-Score": 0.5079,
-      "ROC-AUC": 0.7553,
-      "PR-AUC": 0.5982,
-      "Confusion Matrix": [
-        [
-          1910,
-          202
-        ],
-        [
-          517,
-          371
-        ]
-      ]
-    },
-    {
-      "Model": "Gradient Boosting",
-      "Precision": 0.6576,
-      "Recall": 0.4347,
-      "F1-Score": 0.5234,
-      "ROC-AUC": 0.782,
-      "PR-AUC": 0.6325,
-      "Confusion Matrix": [
-        [
-          1911,
-          201
-        ],
-        [
-          502,
-          386
-        ]
-      ]
-    },
-    {
-      "Model": "XGBoost",
-      "Precision": 0.6094,
-      "Recall": 0.455,
-      "F1-Score": 0.521,
-      "ROC-AUC": 0.7566,
-      "PR-AUC": 0.5819,
-      "Confusion Matrix": [
-        [
-          1853,
-          259
-        ],
-        [
-          484,
-          404
+          250,
+          638
         ]
       ]
     }

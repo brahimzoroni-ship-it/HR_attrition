@@ -1,0 +1,40 @@
+[
+  {
+    "Model": "XGBoost",
+    "Accuracy": 0.7523,
+    "Precision": 0.6094,
+    "Recall": 0.455,
+    "F1-Score": 0.521,
+    "ROC-AUC": 0.7566,
+    "PR-AUC": 0.5819,
+    "Confusion Matrix": [
+      [
+        1853,
+        259
+      ],
+      [
+        484,
+        404
+      ]
+    ]
+  },
+  {
+    "Model": "Gradient Boosting",
+    "Accuracy": 0.7657,
+    "Precision": 0.6576,
+    "Recall": 0.4347,
+    "F1-Score": 0.5234,
+    "ROC-AUC": 0.782,
+    "PR-AUC": 0.6325,
+    "Confusion Matrix": [
+      [
+        1911,
+        201
+      ],
+      [
+        502,
+        386
+      ]
+    ]
+  }
+]
