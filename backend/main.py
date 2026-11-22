@@ -8,9 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="HR Attrition Intelligence Platform API",
-    version="1.0.0",
-    description="Backend API for HR Employee Attrition Analysis, EDA Metrics, ML Model Comparisons, and Attrition Predictions."
+    title="HR Attrition Intelligence Platform API (Original Dataset)",
+    version="2.0.0",
+    description="Backend API powered by pristine HR_capstone_dataset.csv for Attrition Analysis, EDA, ML Models, and Predictions."
 )
 
 app.add_middleware(
@@ -21,31 +21,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model and data summaries at startup
+DATA_PATH = 'HR_capstone_dataset.csv'
 MODEL_PATH = 'models/best_model.pkl'
-model = joblib.load(MODEL_PATH) if os.path.exists(MODEL_PATH) else None
 
-def engineer_features(df):
-    df = df.copy()
-    proj = df['number_project'].replace(0, 1)
-    df['hours_per_project'] = df['average_montly_hours'] / proj
-    df['sat_eval_diff'] = df['satisfaction_level'] - df['last_evaluation']
-    df['burnout_risk'] = ((df['average_montly_hours'] > 220) & (df['number_project'] >= 5)).astype(int)
-    df['under_challenged'] = ((df['average_montly_hours'] < 140) & (df['number_project'] <= 2)).astype(int)
-    df['tenure_sq'] = df['time_spend_company'] ** 2
-    return df
+model = joblib.load(MODEL_PATH) if os.path.exists(MODEL_PATH) else None
 
 @app.get("/")
 def read_root():
     return {
         "status": "online",
         "platform": "HR Attrition Intelligence Platform",
-        "version": "1.0.0"
+        "dataset": "HR_capstone_dataset.csv",
+        "version": "2.0.0"
     }
 
 @app.get("/api/executive-summary")
 def get_executive_summary():
-    df = pd.read_csv('data/hr_attrition.csv').drop_duplicates()
+    df = pd.read_csv(DATA_PATH).drop_duplicates()
     total_employees = int(len(df))
     attrition_rate = float(df['left'].mean())
     left_count = int(df['left'].sum())
@@ -57,20 +49,20 @@ def get_executive_summary():
         "departed_employees": left_count,
         "average_satisfaction": round(avg_satisfaction, 2),
         "key_findings": [
-            "Employees with low satisfaction (< 0.6) and high monthly hours (> 240) have a significantly higher risk of leaving.",
-            "Salary tier plays a critical role: employees in the low salary bracket experience 36.25% attrition vs 14.74% in high salary bracket.",
-            "Tenure milestone of 3-5 years represents peak vulnerability for employee departure."
+            "Employees leaving exhibit significantly lower job satisfaction (0.44 vs 0.67, p < 0.0001).",
+            "Salary tier is a major driver: low salary employees face 20.45% attrition compared to 4.85% for high salary tier.",
+            "Tenure at 3-5 years represents peak vulnerability for employee departure."
         ],
         "business_recommendations": [
-            "Implement early-warning burnout alerts for employees logging > 220 hours/month.",
-            "Review compensation and career progression frameworks for employees in the 3-5 year tenure bracket.",
-            "Conduct structured quarterly satisfaction check-ins across high-attrition departments (Product, Accounting, Support)."
+            "Establish regular feedback loops and career progression milestones for employees reaching 3 years of tenure.",
+            "Review compensation frameworks for low-salary tier staff in technical and sales departments.",
+            "Monitor workload and working hours to prevent burnout among high-performing staff."
         ]
     }
 
 @app.get("/api/hr-analytics")
 def get_hr_analytics():
-    df = pd.read_csv('data/hr_attrition.csv').drop_duplicates()
+    df = pd.read_csv(DATA_PATH).drop_duplicates()
     
     dept_stats = df.groupby('Department')['left'].agg(['count', 'mean']).reset_index()
     dept_stats.columns = ['department', 'total', 'attrition_rate']
@@ -107,25 +99,21 @@ class EmployeeInput(BaseModel):
 @app.post("/api/predict")
 def predict_attrition(employee: EmployeeInput):
     if model is None:
-        raise HTTPException(status_code=500, model_error="Model not loaded")
+        raise HTTPException(status_code=500, detail="Model not loaded")
         
     input_df = pd.DataFrame([employee.model_dump()])
-    input_df = engineer_features(input_df)
-    
     prob_leave = float(model.predict_proba(input_df)[0][1])
     prob_stay = float(1.0 - prob_leave)
     prediction = int(model.predict(input_df)[0])
     
     factors = []
-    if employee.satisfaction_level < 0.6:
+    if employee.satisfaction_level < 0.5:
         factors.append({"factor": "Low Satisfaction Level", "impact": "High Risk", "value": employee.satisfaction_level})
     else:
         factors.append({"factor": "Healthy Satisfaction Level", "impact": "Protective", "value": employee.satisfaction_level})
         
     if employee.average_montly_hours > 220:
         factors.append({"factor": "High Monthly Hours (Burnout Risk)", "impact": "High Risk", "value": employee.average_montly_hours})
-    elif employee.average_montly_hours < 140:
-        factors.append({"factor": "Low Monthly Hours", "impact": "Moderate Risk", "value": employee.average_montly_hours})
     else:
         factors.append({"factor": "Balanced Monthly Hours", "impact": "Protective", "value": employee.average_montly_hours})
         

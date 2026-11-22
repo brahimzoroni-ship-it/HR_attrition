@@ -4,20 +4,17 @@ import pandas as pd
 from scipy import stats
 
 def run_eda():
-    df = pd.read_csv('data/hr_attrition.csv')
-    print("=== DATA QUALITY & SHAPE ===")
-    print(f"Shape: {df.shape}")
+    print("=== EDA & STATISTICAL ANALYSIS ON ORIGINAL DATASET (HR_capstone_dataset.csv) ===")
+    df = pd.read_csv('HR_capstone_dataset.csv')
+    print(f"Original Shape: {df.shape}")
     print(f"Missing values:\n{df.isnull().sum()}")
     print(f"Duplicates: {df.duplicated().sum()}")
     
-    # Clean duplicates and missing values for analysis
+    # Analyze with and without duplicates
     df_clean = df.drop_duplicates().copy()
-    df_clean['satisfaction_level'] = df_clean['satisfaction_level'].fillna(df_clean['satisfaction_level'].median())
-    df_clean['average_montly_hours'] = df_clean['average_montly_hours'].fillna(df_clean['average_montly_hours'].median())
-    
-    print(f"\nCleaned dataset shape: {df_clean.shape}")
+    print(f"Cleaned Shape (dropping duplicates): {df_clean.shape}")
     overall_attrition = df_clean['left'].mean()
-    print(f"Overall Attrition Rate: {overall_attrition:.2%}")
+    print(f"Overall Attrition Rate (cleaned): {overall_attrition:.2%}")
     
     # Answer 3 essential HR questions with statistical tests
     print("\n=== ANSWERING 3 ESSENTIAL HR QUESTIONS ===")
@@ -60,11 +57,12 @@ def run_eda():
     
     os.makedirs('reports', exist_ok=True)
     report_lines = [
-        "# Independent Exploratory Data Analysis (EDA) Report",
+        "# Independent Exploratory Data Analysis (EDA) Report — Original Dataset",
         "",
         "## Dataset Summary",
+        f"- **Dataset Source:** `HR_capstone_dataset.csv` (Original Dataset)",
         f"- **Total Records (Raw):** {len(df)}",
-        f"- **Total Records (Cleaned):** {len(df_clean)}",
+        f"- **Total Records (Cleaned / Deduplicated):** {len(df_clean)}",
         f"- **Overall Attrition Rate:** {overall_attrition:.2%}",
         "",
         "## Statistical Test Results (Mann-Whitney U)",
@@ -87,13 +85,13 @@ def run_eda():
         "## Salary Tier Attrition Breakdown",
         salary_attr.to_markdown(),
         "",
-        "## Answers to Essential HR Questions",
+        "## Answers to Essential HR Questions (Original Dataset)",
         "1. **Why are employees leaving?**",
-        "   - Employees who leave exhibit significantly lower satisfaction levels ($p < 0.0001$), higher workloads (excessive monthly hours and heavy project counts indicating burnout), and lack of promotional opportunities.",
+        "   - Employees who leave exhibit significantly lower satisfaction levels, bimodal distribution of evaluations (very low or very high evaluation), high monthly working hours (burnout), and lack of promotions.",
         "2. **Which employee groups are most affected?**",
-        "   - Employees with **low salary brackets** and those in high-demand departments (such as technical, sales, and support) experience higher attrition rates. Tenure peaks at 3-5 years.",
+        "   - Low salary brackets and specific departments (HR, Accounting, Technical, Sales) show heightened vulnerability, peaking at 3–5 years of tenure.",
         "3. **What are the strongest indicators of attrition?**",
-        "   - Job satisfaction score is the single strongest predictor, followed by monthly working hours (burnout threshold), project count extremes, and salary tier."
+        "   - Satisfaction level is the primary indicator, followed by monthly hours, number of projects (overload/underload), and tenure milestone."
     ])
     
     with open('reports/eda_report.md', 'w') as f:

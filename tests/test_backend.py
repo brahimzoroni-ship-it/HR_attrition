@@ -8,6 +8,7 @@ def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json()["status"] == "online"
+    assert response.json()["dataset"] == "HR_capstone_dataset.csv"
 
 def test_executive_summary():
     response = client.get("/api/executive-summary")

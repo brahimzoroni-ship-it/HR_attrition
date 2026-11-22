@@ -1,43 +1,79 @@
 {
-  "best_model": "Optimized Gradient Boosting",
+  "best_model": "Random Forest",
   "results": [
     {
-      "Model": "Optimized XGBoost",
-      "Optimal Threshold": 0.4,
-      "Accuracy": 0.716,
-      "Precision": 0.5146,
-      "Recall": 0.7128,
-      "F1-Score": 0.5977,
-      "ROC-AUC": 0.7778,
-      "PR-AUC": 0.6188,
+      "Model": "Logistic Regression",
+      "Accuracy": 0.8345,
+      "Precision": 0.503,
+      "Recall": 0.2136,
+      "F1-Score": 0.2998,
+      "ROC-AUC": 0.8418,
+      "PR-AUC": 0.4368,
       "Confusion Matrix": [
         [
-          1515,
-          597
+          1917,
+          84
         ],
         [
-          255,
-          633
+          313,
+          85
         ]
       ]
     },
     {
-      "Model": "Optimized Gradient Boosting",
-      "Optimal Threshold": 0.26,
-      "Accuracy": 0.711,
-      "Precision": 0.5084,
-      "Recall": 0.7185,
-      "F1-Score": 0.5954,
-      "ROC-AUC": 0.7789,
-      "PR-AUC": 0.6213,
+      "Model": "Random Forest",
+      "Accuracy": 0.9862,
+      "Precision": 0.9893,
+      "Recall": 0.9271,
+      "F1-Score": 0.9572,
+      "ROC-AUC": 0.9772,
+      "PR-AUC": 0.9623,
       "Confusion Matrix": [
         [
-          1495,
-          617
+          1997,
+          4
         ],
         [
-          250,
-          638
+          29,
+          369
+        ]
+      ]
+    },
+    {
+      "Model": "Gradient Boosting",
+      "Accuracy": 0.98,
+      "Precision": 0.9487,
+      "Recall": 0.9296,
+      "F1-Score": 0.9391,
+      "ROC-AUC": 0.9831,
+      "PR-AUC": 0.9677,
+      "Confusion Matrix": [
+        [
+          1981,
+          20
+        ],
+        [
+          28,
+          370
+        ]
+      ]
+    },
+    {
+      "Model": "XGBoost",
+      "Accuracy": 0.9821,
+      "Precision": 0.9587,
+      "Recall": 0.9322,
+      "F1-Score": 0.9452,
+      "ROC-AUC": 0.9795,
+      "PR-AUC": 0.964,
+      "Confusion Matrix": [
+        [
+          1985,
+          16
+        ],
+        [
+          27,
+          371
         ]
       ]
     }
