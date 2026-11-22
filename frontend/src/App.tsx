@@ -186,8 +186,12 @@ export default function App() {
                       <p className="text-sm font-medium text-slate-400">Model Precision</p>
                       <ShieldCheck className="w-5 h-5 text-blue-400" />
                     </div>
-                    <p className="text-3xl font-bold text-white mt-2">65.8%</p>
-                    <p className="text-xs text-blue-400 mt-1">Gradient Boosting classifier</p>
+                    <p className="text-3xl font-bold text-white mt-2">
+                      {dsData && dsData.results ? `${(dsData.results.find((r: any) => r.Model === dsData.best_model)?.Precision * 100).toFixed(1)}%` : '98.9%'}
+                    </p>
+                    <p className="text-xs text-blue-400 mt-1">
+                      {dsData ? `${dsData.best_model} classifier` : 'Random Forest classifier'}
+                    </p>
                   </div>
                 </div>
 
@@ -510,7 +514,7 @@ export default function App() {
                   )}
                 </div>
                 <div className="text-center text-xs text-slate-500 pt-4 border-t border-slate-700/60">
-                  Powered by Gradient Boosting & SHAP Explainability
+                  Powered by {dsData?.best_model || 'Random Forest'} & SHAP Explainability
                 </div>
               </div>
             </div>
